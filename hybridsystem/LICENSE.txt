@@ -1,0 +1,30 @@
+Custom License Agreement for hybridsystem 
+
+Copyright © 2025 Tyler. All rights reserved.
+
+This script is licensed, By downloading, using, or possessing a copy of this script, you agree to the following terms:
+
+YOU MAY:
+- Use this script for personal or community server use only.
+- Modify the script for private use only (no distribution of modified versions).
+
+YOU MAY NOT:
+- Reupload, resell, share, or redistribute this script in any form.
+- Modify and rebrand the script to claim it as your own.
+- Remove or alter any copyright notices, credits, or license-related information.
+- Use any part of this script in another resource meant for resale.
+- Bypass or tamper with any licensing or authentication mechanisms if present.
+
+OWNERSHIP:
+This script remains the intellectual property of Tyler, its original author. You are granted a limited-use license, but all rights are reserved by the original creator.
+
+ENFORCEMENT:
+Violations of this license may result in:
+- Revocation of your license and support
+- Permanent ban from future purchases or updates
+- DMCA takedowns, legal actions, or reporting to FiveM/Cfx.re
+
+CONTACT:
+For support or licensing inquiries, contact:
+Discord: bigbrainplaz
+Email: tstipcak@icloud.com
