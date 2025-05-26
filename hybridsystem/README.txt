@@ -2,6 +2,9 @@ Hybrid Vehicle Script for FiveM
 
 Overview
 
+
+addded verson checker
+
 This script adds a realistic hybrid vehicle system to your FiveM server, enabling vehicles to switch between electric (hybrid) and engine modes based on speed and driver behavior. It supports creep mode and ensures notifications are only sent to the driver.
 
 Features
