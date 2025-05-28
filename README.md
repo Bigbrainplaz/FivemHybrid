@@ -29,7 +29,7 @@ Violations of this license may result in:
 - DMCA takedowns, legal actions, or reporting to FiveM/Cfx.re  
 
 **CONTACT:**  
-For support or licensing inquiries, contact:  
+https://discord.gg/23WKzuY3
 Discord: bigbrainplaz  
 Email: tstipcak@icloud.com
 
