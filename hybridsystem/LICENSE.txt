@@ -3,7 +3,6 @@ Custom License Agreement for hybridsystem
 Copyright © 2025 Tyler. All rights reserved.
 
 This script is licensed, By downloading, using, or possessing a copy of this script, you agree to the following terms:
-
 YOU MAY:
 - Use this script for personal or community server use only.
 - Modify the script for private use only (no distribution of modified versions).
