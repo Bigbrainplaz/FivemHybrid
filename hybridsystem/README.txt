@@ -6,6 +6,7 @@ This script adds a realistic hybrid vehicle system to your FiveM server, enablin
 
 Features
 
+
 - Hybrid Mode: Vehicles start in hybrid mode immediately when the driver enters the vehicle.
 - Speed-Based Switching: Automatically disables hybrid mode above certain speeds and re-enables it after 1 minute 45 seconds of low speed or being stopped.
 - Creep Mode: Optional toggle to simulate slow vehicle movement behavior.
