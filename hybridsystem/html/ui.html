@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hybrid HUD</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+  <div id="battery-container" style="display: none;">
+    <div class="battery-card">
+      <div class="mode-indicator">
+          <i class="fa-solid fa-bolt"></i>
+        <span>HYBRID MODE</span>
+        <span class="status"></span>
+      </div>
+      <div class="battery-info">
+        <div class="battery-icon">
+          <i class="fa-solid fa-car-battery"></i>
+        </div>
+        <div class="battery-details">
+          <div class="battery-header">
+            <span id="hybrid-indicator" class="percentage">100%</span>
+            <i class="fa-solid fa-leaf efficiency-icon"></i>
+          </div>
+          <div id="battery-bar">
+            <div id="battery-fill"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

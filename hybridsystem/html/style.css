@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+#battery-container {
+  position: absolute;
+  bottom: 80px;
+  right: 40px;
+  width: 280px;
+  display: flex;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s ease;
+}
+
+#battery-container.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.battery-card {
+  width: 100%;
+  background: #181818;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mode-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #00ffff;
+  background: rgba(0, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  height: 40px;
+  opacity: 1;
+}
+
+.mode-indicator i {
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.hybrid-active .mode-indicator i {
+  animation: pulse 1.5s infinite;
+}
+
+.mode-indicator span {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.mode-indicator .status {
+  margin-left: auto;
+  font-size: 12px;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.mode-indicator {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.hybrid-active .mode-indicator {
+  background: rgba(0, 255, 255, 0.1);
+  color: #00ffff;
+}
+
+.mode-indicator .status {
+  color: #ff3b3b;
+}
+
+.hybrid-active .mode-indicator .status {
+  color: #00ffff;
+}
+
+.battery-icon {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
+
+.hybrid-active .battery-icon {
+  color: #00ffff;
+}
+
+.mode-indicator .status::before {
+  content: "DISABLED";
+}
+
+.hybrid-active .mode-indicator .status::before {
+  content: "ACTIVE";
+}
+
+.battery-info {
+  background: #181818;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.battery-details {
+  flex: 1;
+}
+
+.battery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.percentage {
+  color: white;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.efficiency-icon {
+  color: #4CAF50;
+  font-size: 16px;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+}
+
+.hybrid-active .efficiency-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#battery-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+#battery-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #4CAF50, #8BC34A);
+  transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1), background 0.5s ease;
+  position: relative;
+  border-radius: 6px;
+}
+
+#battery-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+      rgba(255, 255, 255, 0) 0%, 
+      rgba(255, 255, 255, 0.2) 50%, 
+      rgba(255, 255, 255, 0) 100%);
+  animation: shine 2s infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.hybrid-active #battery-fill::after {
+  opacity: 1;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
