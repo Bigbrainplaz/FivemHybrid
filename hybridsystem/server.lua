@@ -4,7 +4,7 @@ AddEventHandler("hybrid:syncMode", function(vehicleNetId, enable)
 end)
 
 local isUpToDate = true -- default to true
-local currentVersion = "0.1.0"
+local currentVersion = "1.0.0"
 local latestVersion = currentVersion -- default in case HTTP fails
 
 local function checkVersion()
