@@ -13,6 +13,7 @@
   right: 40px;
   width: 280px;
   display: flex;
+  flex-direction: column; /* Add this to stack settings button and card */
   transform: translateY(20px);
   opacity: 0;
   transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s ease;
@@ -26,11 +27,10 @@
 .battery-card {
   width: 100%;
   background: #181818;
+  height: auto;
   border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
 }
-
 .mode-indicator {
   display: flex;
   align-items: center;
@@ -186,4 +186,91 @@
 @keyframes shine {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
+}
+/* ⚙️ Settings Button */
+#openSettings {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #222;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+}
+
+#openSettings:hover {
+  background-color: #00ffff;
+  color: #000;
+  opacity: 1;
+}
+
+/* ⚙️ Settings Panel */
+#settingsPanel {
+  position: absolute;
+  top: 70px;
+  right: 40px;
+  width: 250px;
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#settingsPanel h3 {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #00ffff;
+}
+
+#settingsPanel label {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+#settingsPanel input[type="range"] {
+  width: 100%;
+}
+
+#settingsPanel button {
+  background: #00ffff;
+  color: #000;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+#settingsPanel button:hover {
+  background: #00cccc;
+}
+
+#focusBanner {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 255, 255, 0.8);
+  color: #000;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 18px;
+  z-index: 9999;
+  pointer-events: none;
 }
