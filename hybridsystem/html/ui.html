@@ -7,10 +7,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
-  <div id="battery-container" style="display: none;">
+  <!-- HUD Container -->
+  <div id="focusBanner" style="display:none;">IN FOCUS MODE — PRESS ESC TO EXIT</div>
+  <div id="battery-container">
     <div class="battery-card">
       <div class="mode-indicator">
-          <i class="fa-solid fa-bolt"></i>
+        <i class="fa-solid fa-bolt"></i>
         <span>HYBRID MODE</span>
         <span class="status"></span>
       </div>
@@ -29,7 +31,25 @@
         </div>
       </div>
     </div>
+
+    <!-- Settings Button -->
+    <button id="openSettings">⚙️</button>
   </div>
+
+  <!-- Settings Panel -->
+  <div id="settingsPanel">
+    <h3>Hybrid HUD Settings</h3>
+    <br /><br />
+    <br /><br />
+    <label>
+      <input type="checkbox" id="moveModeToggle" />
+      Move Mode
+    </label>
+    <br /><br />
+    <button id="saveSettings">Save</button>
+    <button id="closeSettings">Close</button>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
