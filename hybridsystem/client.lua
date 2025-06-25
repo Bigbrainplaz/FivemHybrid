@@ -1,6 +1,11 @@
-local hybridVehicles = {
-    [GetHashKey("slick20fpiu")] = { electric = "voltic", engine = "ecoboostv6" }
-}
+local hybridVehicles = HybridConfig.Vehicles
+
+-- Load saved settings from client storage
+local storedAutoShow = GetResourceKvpString("hybrid_autoShow")
+local storedScale = GetResourceKvpFloat("hybrid_scale")
+
+HybridConfig.UI.autoShow = storedAutoShow == "true"
+HybridConfig.UI.scale = storedScale > 0 and storedScale or 1.0
 
 local lastSound = {}
 local inHybridMode = {}
@@ -48,20 +53,41 @@ local function updateUI(vehicle)
         SendNUIMessage({
             type = "updateBattery",
             level = math.floor(batteryValue),
-            hybrid = inHybridMode[vehicle] or false
+            hybrid = inHybridMode[vehicle] or false,
+            scale = HybridConfig.UI.scale
         })
     end
 end
 
-local function showUI(vehicle)
+local function showUI(vehicle, save)
     uiVisible[vehicle] = true
-    SendNUIMessage({ type = "showUI" })
-    updateUI(vehicle)
+
+    -- Pull saved position
+    local posX = GetResourceKvpFloat("hybrid_ui_x") or 0.85
+    local posY = GetResourceKvpFloat("hybrid_ui_y") or 0.85
+
+    SendNUIMessage({
+        type = "showUI",
+        level = math.floor(batteryLevel[vehicle] or 100),
+        hybrid = inHybridMode[vehicle] or false,
+        scale = HybridConfig.UI.scale,
+        position = { x = posX, y = posY }
+    })
+
+    if save then
+        SetResourceKvp("hybrid_lastUI", "true")
+    end
 end
 
-local function hideUI(vehicle)
+
+
+local function hideUI(vehicle, save)
     uiVisible[vehicle] = false
     SendNUIMessage({ type = "hideUI" })
+
+    if save then
+        SetResourceKvp("hybrid_lastUI", "false")
+    end
 end
 
 local function setHybrid(vehicle, enable, reason, silent)
@@ -74,12 +100,12 @@ local function setHybrid(vehicle, enable, reason, silent)
     if not data then return end
 
     if enable then
-        applySound(vehicle, data.electric)
-        if not silent then notifyIfDriver("Hybrid mode ENABLED (" .. reason .. ")") end
-    else
-        applySound(vehicle, data.engine)
-        if not silent then notifyIfDriver("Hybrid mode DISABLED (" .. reason .. ")") end
-    end
+    applySound(vehicle, data.electric)
+    if not silent then notifyIfDriver(HybridConfig.Messages.hybridEnabled .. " (" .. reason .. ")") end
+else
+    applySound(vehicle, data.engine)
+    if not silent then notifyIfDriver(HybridConfig.Messages.hybridDisabled .. " (" .. reason .. ")") end
+end
 
     updateUI(vehicle)
 
@@ -103,13 +129,13 @@ RegisterCommand("creep", function()
     if veh ~= 0 then
         creepMode[veh] = not creepMode[veh]
         if creepMode[veh] then
-            notifyIfDriver("Creep mode ENABLED (manual toggle)")
+            notifyIfDriver(HybridConfig.Messages.creepOn .. " (manual toggle)")
             setHybrid(veh, true, "Creep mode enabled")
         else
-            notifyIfDriver("Creep mode DISABLED (manual toggle)")
+            notifyIfDriver(HybridConfig.Messages.creepOff .. " (manual toggle)")
         end
     else
-        notifyIfDriver("You must be in a vehicle to toggle creep mode.")
+        notifyIfDriver(HybridConfig.Messages.mustBeDriver)
     end
 end)
 
@@ -118,16 +144,39 @@ RegisterCommand("togglehybridui", function()
     local veh = GetVehiclePedIsIn(ped, false)
     if veh ~= 0 and hybridVehicles[GetEntityModel(veh)] then
         if uiVisible[veh] then
-            hideUI(veh)
-            notifyIfDriver("Hybrid UI HIDDEN")
+            hideUI(veh, true)
+            notifyIfDriver(HybridConfig.Messages.uiHidden)
         else
-            showUI(veh)
-            notifyIfDriver("Hybrid UI SHOWN")
+            showUI(veh, true)
+            notifyIfDriver(HybridConfig.Messages.uiShown)
         end
     else
-        notifyIfDriver("You must be in a hybrid vehicle to toggle the UI.")
+        notifyIfDriver(HybridConfig.Messages.notHybridVehicle)
     end
 end, false)
+
+RegisterCommand("focus", function()
+    SetNuiFocus(true, true)
+    SendNUIMessage({ type = "enterFocus" })
+end)
+
+RegisterCommand("unfocus", function()
+    SetNuiFocus(false, false)
+    SendNUIMessage({ type = "exitFocus" })
+end)
+
+RegisterNUICallback("setNuiFocus", function(data, cb)
+    SetNuiFocus(data.focus, data.focus)
+    cb("ok")
+end)
+
+RegisterNUICallback("escapePressed", function(_, cb)
+    SetNuiFocus(false, false)
+    SendNUIMessage({ type = "exitFocus" })
+    cb("ok")
+end)
+
+
 
 
 local function flashHeadlights(vehicle, flashes, delay)
@@ -161,7 +210,7 @@ local function flashHeadlights(vehicle, flashes, delay)
     end)
 end
 
-RegisterKeyMapping('togglehybridui', 'Toggle Hybrid UI', 'keyboard', 'F7') -- Change F7 to whatever you want
+RegisterKeyMapping('togglehybridui', 'Toggle Hybrid UI', 'keyboard', HybridConfig.UI.toggleKey)
 
 
 RegisterCommand("testflash", function()
@@ -180,10 +229,10 @@ end)
 local lastVehicle = nil
 
 CreateThread(function()
-    local speedThresholdOff = 60
-    local speedThresholdOn = 45
-    local batteryThresholdOff = 25
-    local batteryThresholdOn = 75
+    local speedThresholdOff = HybridConfig.Speed.switchToGas
+    local speedThresholdOn = HybridConfig.Speed.allowHybrid
+    local batteryThresholdOff = HybridConfig.Battery.thresholdOff
+    local batteryThresholdOn = HybridConfig.Battery.thresholdOn
 
     while true do
         local ped = PlayerPedId()
@@ -191,7 +240,7 @@ CreateThread(function()
 
         -- If vehicle changes, clean up previous
         if lastVehicle and veh ~= lastVehicle then
-            lastUIState[lastVehicle] = uiVisible[lastVehicle] or fals
+            lastUIState[lastVehicle] = uiVisible[lastVehicle] or false
             stoppedTimers[lastVehicle] = nil
             inHybridMode[lastVehicle] = nil
             creepMode[lastVehicle] = nil
@@ -211,23 +260,27 @@ CreateThread(function()
                 lastVehicle = veh
                 batteryLevel[veh] = batteryLevel[veh] or 100
 
-                if lastUIState[veh] then
-                    showUI(veh)
-                else
-                    hideUI(veh)
-                end
+    -- 🔥 Restore saved UI state from disk
+            local storedHUD = GetResourceKvpString("hybrid_lastUI")
+                lastUIState[veh] = (storedHUD == "true")
 
-                    setHybrid(veh, true, "Driver entry")
-                end
+            if lastUIState[veh] then
+                showUI(veh)
+            else
+                hideUI(veh)
+        end
+
+                setHybrid(veh, true, "Driver entry")
+    end
                 
 
                 local speed = GetEntitySpeed(veh) * 3.6 -- km/h
 
                 -- Battery logic
                 if inHybridMode[veh] then
-                    batteryLevel[veh] = math.max(0, batteryLevel[veh] - 0.15)
+                    batteryLevel[veh] = math.max(0, batteryLevel[veh] - HybridConfig.Battery.drainRate)
                 elseif speed > 5 then
-                    batteryLevel[veh] = math.min(100, batteryLevel[veh] + 0.1)
+                    batteryLevel[veh] = math.min(100, batteryLevel[veh] + HybridConfig.Battery.chargeRate)
                 end
 
                 -- Hybrid control logic
@@ -365,4 +418,32 @@ AddStateBagChangeHandler('sirenMode', '', function(bagName, _, value)
             applySound(vehicle, data.engine)
         end
     end
+end)
+
+
+RegisterNUICallback("saveSettings", function(data, cb)
+    SetResourceKvp("hybrid_autoShow", tostring(data.autoShow))
+    SetResourceKvpFloat("hybrid_ui_x", data.position.x)
+    SetResourceKvpFloat("hybrid_ui_y", data.position.y)
+    SetResourceKvpFloat("hybrid_scale", data.scale)
+
+    HybridConfig.UI.autoShow = data.autoShow
+    HybridConfig.UI.scale = data.scale
+
+    cb("ok")
+end)
+
+RegisterNUICallback("savePosition", function(data, cb)
+    if data and data.x and data.y then
+        SetResourceKvpFloat("hybrid_ui_x", data.x)
+        SetResourceKvpFloat("hybrid_ui_y", data.y)
+        print(string.format("[HybridSystem] Saved HUD Position: x=%.2f, y=%.2f", data.x, data.y))
+    end
+    cb("ok")
+end)
+
+RegisterNUICallback("savePosition", function(data, cb)
+    SetResourceKvpFloat("hybrid_ui_x", data.x)
+    SetResourceKvpFloat("hybrid_ui_y", data.y)
+    cb("ok")
 end)
