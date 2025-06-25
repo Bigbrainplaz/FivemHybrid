@@ -3,9 +3,10 @@ game 'gta5'
 
 author 'Bigbrainplaz'
 description 'Hybrid Vehicle Sound Sync System'
-version '2.0.0'
+version '3.0.0'
 
 client_scripts {
+    'config.lua',     -- <- add this
     'client.lua'
 }
 
